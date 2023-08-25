@@ -1,5 +1,5 @@
+python3
 aniso8601==9.0.1
-app==0.0.0
 attrs==23.1.0
 bcrypt==4.0.1
 blinker==1.6.2
