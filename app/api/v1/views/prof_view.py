@@ -3,7 +3,8 @@ from . import Blueprint, db, jsonify, make_response
 from . import Prof, ProfSchema, FacilitySchema, Facility
 from . import Review, ReviewSchema, session, request
 from sqlalchemy import and_
-from . import credentials
+from . import credentials, jwt_required, get_jwt_identity, getId
+
 bp = Blueprint('profs', __name__, url_prefix='/profs')
 
 profSchema = ProfSchema()
@@ -84,6 +85,7 @@ def get_reviews(id):
 
 
 @bp.route('/new', methods=['POST'])
+@jwt_required()
 @credentials(1)
 def add_prof():
     data = request.get_json()
@@ -106,6 +108,7 @@ def add_prof():
 
 
 @bp.route('/<string:id>/reviews/new', methods=['POST'])
+@jwt_required()
 @credentials(1)
 def new_review(id):
     professor = Prof.query.filter_by(id=id).first()
@@ -113,13 +116,13 @@ def new_review(id):
         return jsonify({"error": "Not found"}), 404
 
     data = request.get_json()
-    cond = and_(Review.prof_id == id, Review.user_id == session['user_id'])
+    cond = and_(Review.prof_id == id, Review.user_id == getId())
     isExist = Review.query.filter(cond).first()
     if isExist:
         return jsonify({"error": "Already reviewed"}), 409
     if not all(key in data for key in ['text', 'rating']):
         return jsonify({"error": "Missing data"}), 400
-    data['user_id'] = session['user_id']
+    data['user_id'] = getId()
     data['prof_id'] = id
     try:
         review = reviewSchemaOne.load(data)

@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 from . import Blueprint, db, jsonify, make_response
 from . import Review, ReviewSchema, session, request
-from . import credentials
+from . import credentials, jwt_required, get_jwt_identity, getId
+
 bp = Blueprint('reviews', __name__, url_prefix='/reviews')
 reviewSchema = ReviewSchema()
 
@@ -25,10 +26,11 @@ def get_review(id):
 
 
 @bp.route('/<string:id>', methods=['PUT', 'DELETE'])
+@jwt_required()
 @credentials(1)
 def manpulate_review(id):
     review = Review.query.filter_by(id=id).first()
-    if (review.user_id != session.get('user_id')):
+    if (review.user_id != getId()):
         return jsonify({'error': 'Unauthorized'}), 401
     if not review:
         return jsonify({"error": "Not found"}), 404

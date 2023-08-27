@@ -1,16 +1,14 @@
 #!/usr/bin/python3
-from . import Blueprint, db, jsonify, make_response, session, request
+from . import Blueprint, db, jsonify, request
 from . import User, UserSchema, AdminSchema, Admin, bcrypt
-from . import credentials
+from . import create_access_token, jwt_required, get_jwt_identity
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 userSchema = UserSchema()
 adminSchema = AdminSchema()
 
 
 @bp.route('/register', methods=['POST'])
-@credentials(2)
 def register():
-
     data = request.get_json()
     if not all(key in data for key in ['email', 'password', 'name', 'type', 'gender']):
         return jsonify({"error": "Missing data"}), 400
@@ -37,8 +35,7 @@ def register():
 
 @bp.route('/login', methods=['POST'])
 def login():
-    if session.get("user_id") or session.get("admin_id"):
-        return jsonify({"error": "You are logged in"}), 401
+
     data = request.get_json()
     if not all(key in data for key in ['email', 'password', 'type']):
         return jsonify({"error": "Missing data"}), 400
@@ -53,23 +50,10 @@ def login():
         RoleSchema = adminSchema
 
     member = RoleClass.query.filter_by(email=data['email']).first()
-    if not member:
-        return jsonify({"error": "Incorrect email or password"}), 401
-    if not bcrypt.check_password_hash(member.password, data['password']):
+
+    if not member or not bcrypt.check_password_hash(member.password, data['password']):
         return jsonify({"error": "Incorrect email or password"}), 401
     if role == 'user':
-        session['user_id'] = member.id
-    else:
-        session['admin_id'] = member.id
+        access_token = create_access_token(identity={'id':member.id,'role':role})
 
-    return jsonify({"success": "Logged in"}), 201
-
-
-@bp.route('/logout', methods=['POST'])
-def logout():
-    if (session.get('user_id') or session.get('admin_id')):
-        session.pop('user_id', None)
-        session.pop('admin_id', None)
-        return jsonify({"success": "Logged out"}), 200
-
-    return jsonify({"error": "You are not logged in"}), 401
+    return jsonify({'token':access_token}), 200

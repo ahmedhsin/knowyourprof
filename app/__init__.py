@@ -9,6 +9,11 @@ from sqlalchemy.sql import func
 from flask_cors import CORS
 from flask_whooshee import Whooshee
 from sqlalchemy import event
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
+from datetime import timedelta
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -27,8 +32,12 @@ bcrypt = Bcrypt(app)
 app.config['SESSION_TYPE'] = 'sqlalchemy'
 app.config['SESSION_SQLALCHEMY'] = db
 Session(app)
-CORS(app)
+CORS(app, supports_credentials=True)
 whooshee = Whooshee(app)
+app.config["JWT_SECRET_KEY"] = "XXXXXXXXXXXXXXXXXX"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
+jwt = JWTManager(app)
 
 # Import models
 from .api.v1.models.base_model import BaseModel

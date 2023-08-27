@@ -3,13 +3,15 @@ from . import Blueprint, db, jsonify, make_response
 from . import Review, ReviewSchema, session, request
 from . import Reaction, ReactionSchema
 from sqlalchemy import and_
-from . import credentials
+from . import credentials, jwt_required, get_jwt_identity, getId
+
 
 bp = Blueprint('react', __name__)
 reactionSchema = ReactionSchema()
 
 
 @bp.route('/reviews/<string:id>/react', methods=['POST'])
+@jwt_required()
 @credentials(1)
 def manpulate_react(id):
 
@@ -20,7 +22,7 @@ def manpulate_react(id):
     if not review or not review.approved_by:
         return jsonify({"error": "Not found"}), 404
     cond = and_(Reaction.review_id == id,
-                Reaction.user_id == session['user_id'])
+                Reaction.user_id == getId())
     reaction = Reaction.query.filter(cond).first()
     if reaction:
         if data['react'] == reaction.react:
@@ -40,7 +42,7 @@ def manpulate_react(id):
             reaction.react = not reaction.react
 
     else:
-        data['user_id'] = session['user_id']
+        data['user_id'] = getId()
         data['review_id'] = id
         reaction = reactionSchema.load(data)
         if data['react']:

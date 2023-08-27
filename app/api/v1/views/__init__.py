@@ -9,24 +9,28 @@ from app import Review, ReviewSchema
 from app import Reaction, ReactionSchema
 from app import Facility, FacilitySchema
 from functools import wraps
+from app import jwt_required, get_jwt_identity, create_access_token
 
+def getId():
+
+    return get_jwt_identity()['id']
 
 def credentials(enum):
     # 0 admin, 1 user, 2 user or admin
     def decorator(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
-            user_id = session.get('user_id', None)
-            admin_id = session.get('admin_id', None)
+            identity = get_jwt_identity()
+            role = identity['role']
             ok = False
             if enum == 0:
-                ok = bool(admin_id)
+                ok = (role == 'admin')
             elif enum == 1:
-                ok = bool(user_id)
+                ok = (role == 'user')
             else:
-                ok = bool(user_id) or bool(admin_id)
+                ok = (role == 'admin') or (role == 'user')
             if not ok:
-                return jsonify({'error': 'Unauthorized'}), 401
+                return jsonify({'error': 'Forbidden'}), 403
             else:
                 return f(*args, **kwargs)
         return wrapped

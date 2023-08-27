@@ -2,13 +2,14 @@
 from . import Blueprint, db, jsonify, make_response
 from . import Review, ReviewSchema, session, request
 from . import Admin, Prof, ProfSchema
-from . import credentials
+from . import credentials, jwt_required, get_jwt_identity, getId
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 profSchema = ProfSchema()
 
 
 @bp.route('/reviews/pending', methods=['GET'])
+@jwt_required()
 @credentials(0)
 def pending_reviews():
     reviews = []
@@ -20,6 +21,7 @@ def pending_reviews():
 
 
 @bp.route('/reviews/<string:id>/approve', methods=['POST'])
+@jwt_required()
 @credentials(0)
 def approve(id):
     review = Review.query.filter_by(id=id).first()
@@ -27,11 +29,12 @@ def approve(id):
         return jsonify({"error": "Not found"}), 404
     if review.approved_by:
         return jsonify({"error": "Already approved"}), 409
-    review.approved_by = session.get('admin_id')
+    review.approved_by = getId()
     return jsonify({"success": "Approved"}), 200
 
 
 @bp.route('/reviews/<string:id>/reject', methods=['POST'])
+@jwt_required()
 @credentials(0)
 def reject(id):
 
@@ -46,12 +49,13 @@ def reject(id):
 
 
 @bp.route('/reviews/approved/all', methods=['GET'])
+@jwt_required()
 @credentials(0)
 def get_approved():
     reviews = []
-    admin = Admin.query.filter_by(id=session.get('admin_id')).first()
+    admin = Admin.query.filter_by(id=getId()).first()
     for review in admin.approved_reviews:
-        if review.approved_by == session.get('admin_id'):
+        if review.approved_by == getId():
             tmp = Review.preview(review)
             tmp['approved_by'] = admin.name
             reviews.append(tmp)
@@ -62,6 +66,7 @@ def get_approved():
 
 
 @bp.route('/profs/pending', methods=['GET'])
+@jwt_required()
 @credentials(0)
 def pending_profs():
 
@@ -74,6 +79,7 @@ def pending_profs():
 
 
 @bp.route('/profs/<string:id>/approve', methods=['POST'])
+@jwt_required()
 @credentials(0)
 def approve_prof(id):
     prof = Prof.query.filter_by(id=id).first()
@@ -81,11 +87,12 @@ def approve_prof(id):
         return jsonify({"error": "Not found"}), 404
     if prof.approved_by:
         return jsonify({"error": "Already approved"}), 409
-    prof.approved_by = session.get('admin_id')
+    prof.approved_by = getId()
     return jsonify({"success": "Approved"}), 200
 
 
 @bp.route('/profs/<string:id>/reject', methods=['POST'])
+@jwt_required()
 @credentials(0)
 def reject_prof(id):
 
@@ -100,10 +107,11 @@ def reject_prof(id):
 
 
 @bp.route('/profs/approved/all', methods=['GET'])
+@jwt_required()
 @credentials(0)
 def get_approved_profs():
     profs = []
-    admin = Admin.query.filter_by(id=session.get('admin_id')).first()
+    admin = Admin.query.filter_by(id=getId()).first()
     for prof in admin.approved_profs:
         if prof.approved_by != None:
             tmp = profSchema.dump(prof)
