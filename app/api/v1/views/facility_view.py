@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from . import Blueprint, db, jsonify, make_response
 from . import FacilitySchema, Facility
-from . import Review, ReviewSchema, session, request
+from . import Review, ReviewSchema, request
 from sqlalchemy import and_
 facilitySchema = FacilitySchema()
 
@@ -25,13 +25,11 @@ def filter_fa():
         return jsonify({"error": "Name must have at least 3 characters"}), 400
     page = int(request.args.get('page', default=1))
     limit = int(request.args.get('limit', default=0))
-
     per_page = int(request.args.get('per_page', default=10))
     if name:
         query = Facility.query.whooshee_search(name)
     else:
         query = Facility.query
-
     if not limit:
         Facilities = query.paginate(
             page=page, per_page=per_page, error_out=False)

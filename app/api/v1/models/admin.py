@@ -2,6 +2,7 @@
 
 from .base_model import BaseModel, db, Schema, fields, post_load
 
+
 class Admin(BaseModel, db.Model):
     name = db.Column(db.String(60), nullable=False)
     email = db.Column(db.String(60), unique=True, nullable=False)

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from . import Blueprint, db, jsonify, make_response
-from . import Review, ReviewSchema, session, request
+from . import Review, ReviewSchema, request
 from . import Admin, Prof, ProfSchema
 from . import credentials, jwt_required, get_jwt_identity, getId
 
@@ -15,7 +15,9 @@ def pending_reviews():
     reviews = []
     for review in Review.query.all():
         if review.approved_by == None:
-            reviews.append(Review.preview(review))
+            tmp = Review.preview(review)
+            tmp['prof_id'] = review.prof_id
+            reviews.append(tmp)
 
     return jsonify(reviews), 200
 
@@ -30,6 +32,8 @@ def approve(id):
     if review.approved_by:
         return jsonify({"error": "Already approved"}), 409
     review.approved_by = getId()
+    professor = Prof.query.filter_by(id=review.prof_id).first()
+    professor.total_review_stars += review.rating
     return jsonify({"success": "Approved"}), 200
 
 
@@ -74,7 +78,7 @@ def pending_profs():
     for prof in Prof.query.all():
         if prof.approved_by == None:
             profs.append(profSchema.dump(prof))
-
+ 
     return jsonify(profs), 200
 
 

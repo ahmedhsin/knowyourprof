@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, url_for, redirect
 from flask import Blueprint, jsonify, make_response
-from app import db, bcrypt, session
+from app import db, bcrypt
 from app import BaseModel, func
 from app import User, UserSchema
 from app import Prof, ProfSchema
@@ -11,9 +11,11 @@ from app import Facility, FacilitySchema
 from functools import wraps
 from app import jwt_required, get_jwt_identity, create_access_token
 
+
 def getId():
 
     return get_jwt_identity()['id']
+
 
 def credentials(enum):
     # 0 admin, 1 user, 2 user or admin

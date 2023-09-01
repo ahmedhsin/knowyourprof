@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 from . import Blueprint, db, jsonify, make_response
-from . import Review, ReviewSchema, session, request
+from . import Review, ReviewSchema, request
 from . import credentials, jwt_required, get_jwt_identity, getId
-
+from datetime import datetime
 bp = Blueprint('reviews', __name__, url_prefix='/reviews')
 reviewSchema = ReviewSchema()
 
@@ -32,9 +32,11 @@ def manpulate_review(id):
     review = Review.query.filter_by(id=id).first()
     if (review.user_id != getId()):
         return jsonify({'error': 'Unauthorized'}), 401
+    professor = Prof.query.filter_by(review.prof_id == id).first()
     if not review:
         return jsonify({"error": "Not found"}), 404
     if request.method == 'DELETE':
+        professor.total_review_stars -= review.rating
         db.session.delete(review)
         db.session.commit()
         return jsonify({"success": "Deleted"}), 200
@@ -47,5 +49,7 @@ def manpulate_review(id):
         if data.get('anonymous') != None:
             review.anonymous = data.get('anonymous')
         db.session.commit()
-
+        professor.total_review_stars -= review.rating
+    del review.approved_by
+    review.updated_at = datetime.now()
     return jsonify({"success": "updated"}), 200

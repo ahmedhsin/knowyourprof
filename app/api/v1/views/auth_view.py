@@ -54,6 +54,7 @@ def login():
     if not member or not bcrypt.check_password_hash(member.password, data['password']):
         return jsonify({"error": "Incorrect email or password"}), 401
     if role == 'user':
-        access_token = create_access_token(identity={'id':member.id,'role':role})
+        access_token = create_access_token(
+            identity={'id': member.id, 'role': role})
 
-    return jsonify({'token':access_token}), 200
+    return jsonify({'token': access_token}), 200

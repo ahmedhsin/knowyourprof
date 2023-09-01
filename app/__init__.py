@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 import os
 import re
-from flask import Flask, render_template, Blueprint, session, url_for, redirect
+from flask import Flask, render_template, Blueprint, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_session import Session
 from sqlalchemy.sql import func
 from flask_cors import CORS
 from flask_whooshee import Whooshee
@@ -22,16 +21,12 @@ app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['WHOOSHEE_DIR'] = 'app/whooshee-indexing'
-app.config["SESSION_COOKIE_SAMESITE"] = "None"
-app.config["SESSION_COOKIE_SECURE"] = "True"
+app.config['WHOOSHEE_DIR'] = basedir + '/whooshee-indexing'
+
 
 # Initialize extensions
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
-app.config['SESSION_TYPE'] = 'sqlalchemy'
-app.config['SESSION_SQLALCHEMY'] = db
-Session(app)
 CORS(app, supports_credentials=True)
 whooshee = Whooshee(app)
 app.config["JWT_SECRET_KEY"] = "XXXXXXXXXXXXXXXXXX"

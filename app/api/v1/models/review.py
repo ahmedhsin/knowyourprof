@@ -12,6 +12,7 @@ review
 
 class Review(BaseModel, db.Model):
     text = db.Column(db.Text(), nullable=False)
+    overview = db.Column(db.String(), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.String(60), db.ForeignKey(
         'user.id'), nullable=False)
@@ -27,10 +28,14 @@ class Review(BaseModel, db.Model):
     def preview(review):
         tmp = {}
         tmp['text'] = review.text
+        tmp['overview'] = review.overview
         tmp['id'] = review.id
         tmp['rating'] = review.rating
         tmp['likes'] = review.likes
         tmp['dislikes'] = review.dislikes
+        tmp['created_at'] = review.created_at.strftime('%Y-%m-%d %H:%M')
+        tmp['updated_at'] = review.updated_at.strftime('%Y-%m-%d %H:%M')
+        
         if review.anonymous:
             tmp['user'] = 'anonymous'
         else:
@@ -47,6 +52,7 @@ class Review(BaseModel, db.Model):
 class ReviewSchema(Schema):
     id = fields.Str(required=False)
     text = fields.Str()
+    overview = fields.Str()
     rating = fields.Int()
     user_id = fields.Str()
     prof_id = fields.Str()

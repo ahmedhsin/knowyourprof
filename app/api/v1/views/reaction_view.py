@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from . import Blueprint, db, jsonify, make_response
-from . import Review, ReviewSchema, session, request
+from . import Review, ReviewSchema, request
 from . import Reaction, ReactionSchema
 from sqlalchemy import and_
 from . import credentials, jwt_required, get_jwt_identity, getId
@@ -31,6 +31,8 @@ def manpulate_react(id):
                 review.likes -= 1
             else:
                 review.dislikes -= 1
+            db.session.commit()
+            print("deleted")
             return jsonify({"success": "Deleted"}), 200
         else:
             if reaction.react:
@@ -40,6 +42,9 @@ def manpulate_react(id):
                 review.likes += 1
                 review.dislikes -= 1
             reaction.react = not reaction.react
+            print("updated")
+            db.session.commit()
+            return jsonify({"success": "Updated"}), 201
 
     else:
         data['user_id'] = getId()
@@ -51,6 +56,7 @@ def manpulate_react(id):
             review.dislikes += 1
         db.session.add(reaction)
         db.session.commit()
+    print("added")
     return jsonify({"success": "Created"}), 201
 
 
@@ -63,3 +69,5 @@ def all_reacts(id):
         'upvotes': likes,
         'downvotes': dislikes
     }), 200
+
+

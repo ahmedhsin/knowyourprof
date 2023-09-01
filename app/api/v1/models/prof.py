@@ -18,6 +18,7 @@ class Prof(BaseModel, db.Model):
     department = db.Column(db.String(60))
     gender = db.Column(db.Boolean(), nullable=False)
     reviews = db.relationship('Review', backref='prof')
+    total_review_stars = db.Column(db.Float, default=0.0)
     facilities = db.relationship(
         'Facility', secondary=prof_facility_association, back_populates='profs')
 
