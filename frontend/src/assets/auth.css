@@ -1,0 +1,131 @@
+/*login page*/
+
+
+.container{
+	display:flex;
+	color:black;
+
+}
+.side{
+	/*background: url(./bg.jpg) no-repeat fixed;
+	background-position:bottom right;*/
+	position:relative;
+	width:35%;
+	height:100vh;
+	display:flex;
+	justify-content:center;
+}
+.logo{
+	width: 50%;
+}
+.auth-container{
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	justify-content:center;
+	min-width:600px;
+	width:65%;
+	background-color:rgb(241,241,241);
+
+}
+.auth-container-reg{
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	justify-content:center;
+	gap:50px;
+	min-width:600px;
+	width:65%;
+	background-color:rgb(241,241,241);
+
+}
+.auth-input-container{
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	height:40vh;
+	justify-content:space-around;
+}
+.auth-inputs-x{
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	gap:50px;
+}
+.auth-inputs{
+	color:black;
+	font-size:24px;
+	border:none;
+	background-color:transparent;
+	outline:none;
+	min-width:500px;
+	border-bottom:2px solid gray;
+}
+.auth-btn{
+	min-width:500px;
+	height:50px;
+	text-align:center;
+	border:none;
+	cursor:pointer;
+	border-radius:5px;
+	transition: background-color 0.15s;
+	background-color:rgb(25,41,128);
+	color:white;
+
+	font-size:21px;
+	margin-bottom:12px;
+}
+.auth-btn:disabled{
+	background-color:gray;
+}
+.signup-tag{
+	color:rgb(25,41,128);
+}
+::placeholder, .signup { /* Most modern browsers support this now. */
+   color:rgb(193,193,193);
+}
+/* mobile  */
+
+@media only screen and (max-width:1000px){
+	.side{
+		display:none;
+	}
+	.container{
+		display:flex;
+	}
+	.bg-auth-mobile{
+		display:block;
+	}
+	#logo-auth{
+		display:block;
+	}
+	.dist-gender{
+		color:rgb(241,241,241);
+	}
+	.auth-container, .auth-container-reg{
+		width:100%;
+		position: absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
+		background-color:transparent;
+		min-width:auto;
+	}
+	.auth-inputs, .auth-btn{
+		min-width: 300px;
+		color:white;
+	}
+}
+.dist-gender{
+	min-width:230px;
+	margin-bottom:20px;
+	display:flex;
+	justify-content:space-between;
+}
+.name-auth{
+	margin-top:25px;
+}
+.radio-auth{
+	margin:5px;
+}
