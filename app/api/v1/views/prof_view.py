@@ -21,11 +21,14 @@ def all_profs():
             prof_ser = profSchema.dump(prof)
             facilities = facilitySchema.dump(prof.facilities)
             prof_ser['facilities'] = facilities
-            allProfs.append(prof_ser)
+            prof_ser['total_reviews'] = prof.total_review_stars
             try:
-                prof_ser['average_rating'] = professor.total_review_stars / len(reviews)
+                prof_ser['average_rating'] = prof.total_review_stars / \
+                    len(prof.reviews)
             except Exception:
                 prof_ser['average_rating'] = 0
+            allProfs.append(prof_ser)
+
     return jsonify(allProfs)
 
 
@@ -57,11 +60,14 @@ def filter_profs():
             prof_ser = profSchema.dump(prof)
             facilities = facilitySchema.dump(prof.facilities)
             prof_ser['facilities'] = facilities
-            allProfs.append(prof_ser)
+
+            prof_ser['total_reviews'] = len(prof.reviews)
             try:
-                prof_ser['average_rating'] = professor.total_review_stars / len(reviews)
+                prof_ser['average_rating'] = prof.total_review_stars / \
+                    len(prof.reviews)
             except Exception:
                 prof_ser['average_rating'] = 0
+            allProfs.append(prof_ser)
     if not limit:
         return jsonify({'hasNext': hasNext, 'profs': allProfs})
     else:
@@ -75,8 +81,11 @@ def get_prof(id):
         return jsonify({"error": "Not found"}), 404
     prof_ser = profSchema.dump(professor)
     prof_ser['facilities'] = facilitySchema.dump(professor.facilities)
+    prof_ser['total_reviews'] = len(professor.reviews)
+
     try:
-        prof_ser['average_rating'] = professor.total_review_stars / len(reviews)
+        prof_ser['average_rating'] = professor.total_review_stars / \
+            len(professor.reviews)
     except Exception:
         prof_ser['average_rating'] = 0
     print(prof_ser['average_rating'])
@@ -94,7 +103,7 @@ def get_reviews(id):
         if review.approved_by:
             reviews.append(Review.preview(review))
 
-    #sort the reviews
+    # sort the reviews
     def sorting_key(review):
         return review['likes'] + review['dislikes']
     reviews = sorted(reviews, key=sorting_key, reverse=True)
@@ -108,18 +117,19 @@ def get_reviews(id):
 def add_prof():
     data = request.get_json()
     print(data)
-    if not all(key in data for key in ['name', 'facilities', 'gender']):
+    if not all(key in data for key in ['name', 'facility', 'gender']):
         return jsonify({"error": "Missing data"}), 400
-    facilities = data['facilities']
-    del data['facilities']
-    professor = profSchema.load(data)
-    for name in facilities:
-        facility = Facility.query.filter_by(name=name).first()
-        if facility and facility not in professor.facilities:
-            professor.facilities.append(facility)
+    facility = data['facility']
+    if data['gender'] == 'true':
+        data['gender'] = True
+    else:
+        data['gender'] = False
+    s_facility = Facility.query.filter_by(name=facility).first()
+    if not s_facility:
+        s_facility = Facility(name=facility)
+    professor = Prof(name=data['name'], gender=data['gender'])
+    professor.facilities.append(s_facility)
 
-    if (len(professor.facilities) == 0):
-        return jsonify({"error": "Missing data"}), 400
     db.session.add(professor)
     db.session.commit()
     return jsonify({"success": "Created"}), 201
@@ -138,7 +148,7 @@ def new_review(id):
     isExist = Review.query.filter(cond).first()
     if isExist:
         return jsonify({"error": "Already reviewed"}), 409
-    if not all(key in data for key in ['text', 'rating']):
+    if not all(key in data for key in ['text', 'rating', 'overview', 'anonymous']):
         return jsonify({"error": "Missing data"}), 400
     data['user_id'] = getId()
     data['prof_id'] = id
@@ -153,7 +163,7 @@ def new_review(id):
 
 @bp.route('/<string:id>/reviews/react/all', methods=['GET'])
 @jwt_required()
-@credentials(1)
+@credentials(2)
 def all_reacts_ids(id):
 
     professor = Prof.query.filter_by(id=id).first()
@@ -164,13 +174,14 @@ def all_reacts_ids(id):
     user_id = getId()
     for review in professor.reviews:
         if review.approved_by:
-            user_reaction = Reaction.query.filter_by(user_id=user_id, review_id=review.id).first()
+            user_reaction = Reaction.query.filter_by(
+                user_id=user_id, review_id=review.id).first()
             if user_reaction is not None:
                 reacts[review.id] = user_reaction.react
     return jsonify(reacts)
 
 
-#not used
+# not used
 @bp.route('/<string:id>/reviews/filter', methods=['GET'])
 def filter_reviews(id):
     overview = request.args.get('overview', default=None)
@@ -181,14 +192,16 @@ def filter_reviews(id):
     per_page = int(request.args.get('per_page', default=10))
     sort_by_rating = request.args.get('sort', default=None)
     if overview:
-        query = Review.query.filter(Review.prof_id == id).whooshee_search(overview)
+        query = Review.query.filter(
+            Review.prof_id == id).whooshee_search(overview)
     else:
         query = Review.query.filter(Review.prof_id == id)
     if sort_by_rating == 'asc':
         sort_reverse = False
     else:
         sort_reverse = True
-    query = query.order_by((Review.likes + Review.dislikes).desc() if sort_reverse else (Review.likes + Review.dislikes).asc())
+    query = query.order_by((Review.likes + Review.dislikes).desc()
+                           if sort_reverse else (Review.likes + Review.dislikes).asc())
     if not limit:
         reviews = query.paginate(page=page, per_page=per_page, error_out=False)
         hasNext = reviews.has_next

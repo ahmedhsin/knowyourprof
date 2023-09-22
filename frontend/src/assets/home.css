@@ -71,14 +71,14 @@
 	background-color:#EDEADE;
 }
 
-/*
+
 .search-prof:focus + .suggest-n , .suggest-n:hover{
     display: block;
 }
 .search-facility:focus + .suggest-f , .suggest-f:hover{
     display: block;
 }
-*/
+
 .suggest-n:hover, .suggest-f:hover{
     display: block;
 }

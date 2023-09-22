@@ -193,12 +193,22 @@
 
 /**/
 .color{
-	background-color:red;
+	color:gray;
+	cursor:pointer;
+	border:1px solid white;
+	padding:10px;
+	border-radius:10px;
+	background-color:white;
 }
 .admin-pending-bar{
 	display: flex;
-	width:100%;
 	justify-content:space-around;
 	padding:20px 20px 0px 20px;
 	background-color:rgb(249,247,247);
+}
+#admin-reviews-pending{
+	display:none;
+}
+#prof-id-reviews{
+	font-size:10px;
 }

@@ -4,7 +4,9 @@
 .container{
 	display:flex;
 	color:black;
-
+}
+.dist-gender{
+	margin-top:15px;
 }
 .side{
 	/*background: url(./bg.jpg) no-repeat fixed;
@@ -25,7 +27,7 @@
 	justify-content:center;
 	min-width:600px;
 	width:65%;
-	background-color:rgb(241,241,241);
+	/*background-color:rgb(241,241,241);*/
 
 }
 .auth-container-reg{
@@ -53,7 +55,7 @@
 	gap:50px;
 }
 .auth-inputs{
-	color:black;
+	color:white;
 	font-size:24px;
 	border:none;
 	background-color:transparent;
@@ -86,36 +88,34 @@
 }
 /* mobile  */
 
-@media only screen and (max-width:1000px){
-	.side{
-		display:none;
-	}
-	.container{
-		display:flex;
-	}
-	.bg-auth-mobile{
-		display:block;
-	}
-	#logo-auth{
-		display:block;
-	}
-	.dist-gender{
-		color:rgb(241,241,241);
-	}
-	.auth-container, .auth-container-reg{
-		width:100%;
-		position: absolute;
-		top:0;
-		bottom:0;
-		left:0;
-		right:0;
-		background-color:transparent;
-		min-width:auto;
-	}
-	.auth-inputs, .auth-btn{
-		min-width: 300px;
-		color:white;
-	}
+.side{
+	display:none;
+}
+.container{
+	display:flex;
+}
+.bg-auth-mobile{
+	display:block;
+}
+#logo-auth{
+	display:block;
+}
+.dist-gender{
+	color:rgb(241,241,241);
+}
+.auth-container, .auth-container-reg{
+	width:100%;
+	position: absolute;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	background-color:transparent;
+	min-width:auto;
+}
+.auth-inputs, .auth-btn{
+	min-width: 300px;
+	color:white;
 }
 .dist-gender{
 	min-width:230px;

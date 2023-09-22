@@ -12,7 +12,7 @@ reactionSchema = ReactionSchema()
 
 @bp.route('/reviews/<string:id>/react', methods=['POST'])
 @jwt_required()
-@credentials(1)
+@credentials(2)
 def manpulate_react(id):
 
     data = request.get_json()
@@ -69,5 +69,3 @@ def all_reacts(id):
         'upvotes': likes,
         'downvotes': dislikes
     }), 200
-
-

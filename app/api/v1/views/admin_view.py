@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 from . import Blueprint, db, jsonify, make_response
 from . import Review, ReviewSchema, request
-from . import Admin, Prof, ProfSchema
+from . import Admin, Prof, ProfSchema, FacilitySchema
 from . import credentials, jwt_required, get_jwt_identity, getId
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 profSchema = ProfSchema()
+facilitySchema = FacilitySchema(many=True)
 
 
 @bp.route('/reviews/pending', methods=['GET'])
@@ -34,6 +35,7 @@ def approve(id):
     review.approved_by = getId()
     professor = Prof.query.filter_by(id=review.prof_id).first()
     professor.total_review_stars += review.rating
+    db.session.commit()
     return jsonify({"success": "Approved"}), 200
 
 
@@ -77,8 +79,12 @@ def pending_profs():
     profs = []
     for prof in Prof.query.all():
         if prof.approved_by == None:
-            profs.append(profSchema.dump(prof))
- 
+            tmp = profSchema.dump(prof)
+            tmp['created_at'] = prof.created_at
+            tmp['updated_at'] = prof.updated_at
+            tmp['facilities'] = facilitySchema.dump(prof.facilities)
+            profs.append(tmp)
+
     return jsonify(profs), 200
 
 
@@ -92,6 +98,7 @@ def approve_prof(id):
     if prof.approved_by:
         return jsonify({"error": "Already approved"}), 409
     prof.approved_by = getId()
+    db.session.commit()
     return jsonify({"success": "Approved"}), 200
 
 

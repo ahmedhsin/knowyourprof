@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from "react";
-import post from "../hooks/post";
-import get from "../hooks/get";
+import post from "../func/post";
+import get from "../func/get";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import NavBar from "../components/Nav";
 import bgHeader from "../assets/bg.jpg";
@@ -11,6 +10,8 @@ import down from "../assets/icons/down.svg";
 import ellipsis from "../assets/icons/ellipsis.svg";
 import StarRating from "../components/StarRating";
 import Footer from "../components/Footer";
+import SomethingWrong from "../components/SomethingWrong";
+
 import Cookies from "js-cookie";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
@@ -18,101 +19,134 @@ import { BiUpvote, BiDownvote } from "react-icons/bi";
 
 const api_url = process.env.REACT_APP_API_URL;
 
-const Reactions = ({review, orginalReact}) => {
-  const redirect = useNavigate()
-  const [react, setReact] = useState(
-    orginalReact === undefined ? null : orginalReact
-    );
-  const [likes, setLikes] = useState(review.likes);
-  const [dislikes, setDislikes] = useState(review.dislikes);
-  const reactEndPoint = api_url + '/reviews/' + review.id + '/react';
-  const sendReact = useMutation({
-    mutationFn: (data)=>post(reactEndPoint, data, true),
-    onSuccess:(data)=>{
-      console.log(data)
-    }
-  })
-  const handleReact = (newReaction) => {
-    if (orginalReact === null) redirect('/login')
-    console.log(react)
-    console.log(newReaction)
-    if (react === newReaction) {
-      sendReact.mutate({ 'react': react})
-      newReaction === true ? setLikes(likes - 1) : setDislikes(dislikes - 1);
-      setReact(null);
-
-    } else {
-      sendReact.mutate({ 'react': newReaction})
-      newReaction === true ? setLikes(likes + 1) : setDislikes(dislikes + 1);
-
-      if (react !== null) {
-        react === true ? setLikes(likes - 1) : setDislikes(dislikes - 1);
-      }
-      setReact(newReaction);
-    }
-        console.log(react)
-    console.log(newReaction)
-  };
-
+const ManpulatePending = ({ type, id }) => {
+  const approve = `${api_url}/admin/${type}/${id}/approve`;
+  const reject = `${api_url}/admin/${type}/${id}/reject`;
+  const sendApprove = useMutation({
+    mutationFn: (data) => post(approve, {}, true),
+  });
+  const sendReject = useMutation({
+    mutationFn: () => post(reject, {}, true),
+  });
   return (
     <div className="prof-review-reaction">
-      <div className="prof-up-down">
-        <BiUpvote
-          className={`up-down-icon up-icon ${react === true ? 'clicked-react' : ''}`}
-          onClick={() => handleReact(true)}
-        />
-        <p>{likes}</p>
-      </div>
-      <div className="prof-up-down">
-        <BiDownvote
-          className={`up-down-icon down-icon ${react === false ? 'clicked-react' : ''}`}
-          onClick={() => handleReact(false)}
-        />
-        <p>{dislikes}</p>
-      </div>
+      <button
+        className="prof-review-btn"
+        onClick={(e) => {
+          sendApprove.mutate();
+          e.target.parentElement.innerHTML =
+            '<p className="admin-manpulate" style="color: gray">Approved</p>';
+        }}
+      >
+        Approve
+      </button>
+      <button
+        className="prof-review-btn"
+        onClick={(e) => {
+          sendReject.mutate();
+          e.target.parentElement.innerHTML =
+            '<p className="admin-manpulate" style="color: gray">Rejected</p>';
+        }}
+      >
+        Reject
+      </button>
     </div>
   );
 };
 
-const Frame = ({id})=>(
-    <iframe
+const Frame = ({ id }) => (
+  <iframe
     id="myIframe"
     src="/login"
     frameBorder="0"
     title="myIframe"
     className="frame"
-    />
-)
-
+  />
+);
 
 const Admin = () => {
-  const reviewsQuery = {};
-  reviewsQuery['isSuccess'] = false;
+  const adminEndPoint = api_url + "/account/admin";
+  const pendingProfsEndPoint = api_url + "/admin/profs/pending";
+  const pendingReviewsEndPoint = api_url + "/admin/reviews/pending";
 
+  const perPage = 5;
+  const [pageReviews, setPageReviews] = useState(0);
+  const [reviews, setReviews] = useState([]);
+  const [pageProfs, setPageProfs] = useState(0);
+  const [profs, setProfs] = useState([]);
+
+  const adminQuery = useQuery({
+    queryKey: ["getAdmin"],
+    queryFn: () => get(adminEndPoint, true),
+    onError: (err) => {
+      alert(err);
+    },
+  });
+  const pendingReviewsQuery = useQuery({
+    queryKey: ["getPendingReviews"],
+    queryFn: () => get(pendingReviewsEndPoint, true),
+    onSuccess: () => setPageReviews(pageReviews),
+    onError: (err) => {
+      alert(err);
+    },
+  });
+  const pendingProfsQuery = useQuery({
+    queryKey: ["getPendingProfs"],
+    queryFn: () => get(pendingProfsEndPoint, true),
+    onSuccess: () => setPageProfs(pageProfs),
+    onError: (err) => {
+      alert(err);
+    },
+  });
+
+  useEffect(() => {
+    if (pendingReviewsQuery.isSuccess) {
+      setReviews(
+        reviews.concat(
+          pendingReviewsQuery.data.slice(
+            reviews.length,
+            reviews.length + perPage,
+          ),
+        ),
+      );
+    }
+  }, [pageReviews, pendingReviewsQuery.isFetching]);
+  useEffect(() => {
+    if (pendingProfsQuery.isSuccess) {
+      setProfs(
+        profs.concat(
+          pendingProfsQuery.data.slice(profs.length, profs.length + perPage),
+        ),
+      );
+    }
+  }, [pageProfs, pendingProfsQuery.isFetching]);
+  if (
+    adminQuery.isError ||
+    pendingReviewsQuery.isError ||
+    pendingProfsQuery.isError
+  ) {
+    return <SomethingWrong />;
+  }
   return (
     <div id="prof-container">
       <div className="prof-header">
         {/*<Frame id={id}/>*/}
-        <NavBar />
+        {/*<NavBar />*/}
         <img src={bgHeader} className="prof-bground bg-img-dark" />
         <div className="prof-top">
-          <div className="prof-review-box">
-          </div>
+          <div className="prof-review-box"></div>
           <div className="prof-img-data">
             <div className="prof-detials">
               <div className="prof-detials2">
-                <div className="prof-stars">
-                </div>
+                <div className="prof-stars"></div>
                 <div className="prof-name">
                   <p className="prof-name-text">
-                    {/*adminQuery.isSuccess && (adminQuery.data).name*/}
+                    {adminQuery.isSuccess && adminQuery.data.name}
                   </p>
                 </div>
               </div>
 
-              <div className="prof-facilities">
-
-              </div>
+              <div className="prof-facilities"></div>
             </div>
             <div>
               <img
@@ -121,29 +155,41 @@ const Admin = () => {
                 alt=""
               />
             </div>
-            <div className="prof-review-box-mobile">
-              <button className="prof-review-btn prof-btn-mobile">
-                Review
-              </button>
-            </div>
+            <div className="prof-review-box-mobile"></div>
           </div>
         </div>
         <div className="admin-pending-bar">
-            <div className="pending-reviews color">
-              <p>Pending Reviews</p>
-            </div>
-            <div className="pending-profs color">
-              <p>Pending profs</p>
-            </div>
+          <div className="pending-reviews color">
+            <p
+              onClick={() => {
+                document.getElementById("admin-reviews-pending").style.display =
+                  "flex";
+                document.getElementById("admin-profs-pending").style.display =
+                  "none";
+              }}
+            >
+              Pending Reviews
+            </p>
+          </div>
+          <div className="pending-profs color">
+            <p
+              onClick={() => {
+                document.getElementById("admin-profs-pending").style.display =
+                  "flex";
+                document.getElementById("admin-reviews-pending").style.display =
+                  "none";
+              }}
+            >
+              Pending profs
+            </p>
+          </div>
         </div>
-        <div className="prof-reviews">
-          {/*reviewsQuery.isSuccess &&
+        <div className="prof-reviews" id="admin-reviews-pending">
+          {pendingReviewsQuery.isSuccess &&
             reviews.map((review) => (
               <div className="prof-review">
                 <div className="prof-review-header">
-                  <div>
-                    <img src={ellipsis} className="prof-option-bar" />
-                  </div>
+                  <div></div>
                   <div className="prof-review-user">
                     <StarRating valid={false} rating={review.rating} />
                     <div>
@@ -163,26 +209,53 @@ const Admin = () => {
                   </div>
                 </div>
                 <div className="prof-review-text">
-                  <Link className="prof-review-text-content" to=`/profs/{review.prof_id}`>{review.prof_id}</Link>
+                  <Link
+                    target="_blank"
+                    className="prof-review-text-content prof-review-text-overview"
+                    id="prof-id-reviews"
+                    to={`/profs/${review.prof_id}`}
+                  >
+                    {review.prof_id}
+                  </Link>
                   <p className="prof-review-text-overview">{review.overview}</p>
                   <p className="prof-review-text-content">{review.text}</p>
-
                 </div>
-                  {reactsQuery.isSuccess && <Reactions review={review} orginalReact={(reactsQuery.data)[review.id]}/>}
-                  {!reactsQuery.isSuccess && <Reactions review={review} orginalReact={null}/>}
+                <ManpulatePending type={"reviews"} id={review.id} />
               </div>
-            ))*/}
+            ))}
 
-
+          {pendingReviewsQuery.isSuccess &&
+            reviews.length < pendingReviewsQuery.data.length && (
+              <button
+                className="see-more-reviews"
+                onClick={() => setPageReviews(pageReviews + 1)}
+              >
+                see More
+              </button>
+            )}
+        </div>
+        {/*profs part*/}
+        <div className="prof-reviews" id="admin-profs-pending">
+          {pendingProfsQuery.isSuccess &&
+            profs.map((prof) => (
               <div className="prof-review">
                 <div className="prof-review-header">
-                  <div>
-                    <img src={ellipsis} className="prof-option-bar" />
-                  </div>
+                  <div></div>
                   <div className="prof-review-user">
                     <div>
-                      <p className="prof-review-user-name">blabla</p>
-                      <p className="prof-review-user-date">2021-21-01 12:00</p>
+                      <p className="prof-review-user-name">{prof.name}</p>
+                      <p className="prof-review-user-date">
+                        {prof["created_at"] &&
+                          (prof["created_at"] === prof["updated_at"]
+                            ? prof["created_at"]
+                            : "edited " + prof["updated_at"])}
+                      </p>
+                      <p className="prof-review-user-date">
+                        {prof.facilities
+                          .map((obj) => obj.name)
+                          .join(",")
+                          .slice(0, 15) + "..."}
+                      </p>
                     </div>
                     <img
                       src={require("../assets/profile/p.jpg")}
@@ -191,28 +264,22 @@ const Admin = () => {
                     />
                   </div>
                 </div>
-                <div className="prof-review-text">
-                  <p className="prof-review-text-content">prof name</p>
-                  <p className="prof-review-text-content">id: 127asd.asdf.f.vcxvd.sad</p>
-                  <p className="prof-review-text-overview">blabla</p>
-                  <p className="prof-review-text-content">blablbalbalblablalba</p>
-                </div>
+                <ManpulatePending type={"profs"} id={prof.id} />
               </div>
+            ))}
 
-
-
-          {/*reviewsQuery.isSuccess &&
-            reviews.length < (reviewsQuery.data).length && (
+          {pendingProfsQuery.isSuccess &&
+            profs.length < pendingProfsQuery.data.length && (
               <button
                 className="see-more-reviews"
-                onClick={() => setPage(page + 1)}
+                onClick={() => setPageProfs(pageProfs + 1)}
               >
                 see More
               </button>
-            )*/}
+            )}
         </div>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 };

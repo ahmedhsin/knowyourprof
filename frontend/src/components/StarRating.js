@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { IoMdStar } from "react-icons/io";
-import '../assets/starrating.css'
-const StarRating = ({valid, rating, setRating}) => {
+import "../assets/starrating.css";
+const StarRating = ({ valid, rating, setRating }) => {
   const [hover, setHover] = useState(null);
-  if (valid){
+  /*if (valid){
     document.getElementById('starrating-icon').style.cursor = 'pointer'
-  }
+  }*/
   return (
     <div>
       {[...Array(5)].map((star, i) => {
         const ratingValue = i + 1;
 
         return (
-          <label>
+          <label key={i}>
             <input
               type="radio"
               name="rating-inputs"

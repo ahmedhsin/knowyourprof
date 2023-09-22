@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from "react";
-import post from "../hooks/post";
-import get from "../hooks/get";
+import post from "../func/post";
+import get from "../func/get";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import NavBar from "../components/Nav";
 import bgHeader from "../assets/bg.jpg";
@@ -11,6 +10,10 @@ import down from "../assets/icons/down.svg";
 import ellipsis from "../assets/icons/ellipsis.svg";
 import StarRating from "../components/StarRating";
 import Footer from "../components/Footer";
+import SomethingWrong from "../components/SomethingWrong";
+
+import Review from "../components/Review";
+
 import Cookies from "js-cookie";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
@@ -18,31 +21,30 @@ import { BiUpvote, BiDownvote } from "react-icons/bi";
 
 const api_url = process.env.REACT_APP_API_URL;
 
-const Reactions = ({review, orginalReact}) => {
-  const redirect = useNavigate()
+const Reactions = ({ review, orginalReact }) => {
+  const redirect = useNavigate();
   const [react, setReact] = useState(
-    orginalReact === undefined ? null : orginalReact
-    );
+    orginalReact === undefined ? null : orginalReact,
+  );
   const [likes, setLikes] = useState(review.likes);
   const [dislikes, setDislikes] = useState(review.dislikes);
-  const reactEndPoint = api_url + '/reviews/' + review.id + '/react';
+  const reactEndPoint = api_url + "/reviews/" + review.id + "/react";
   const sendReact = useMutation({
-    mutationFn: (data)=>post(reactEndPoint, data, true),
-    onSuccess:(data)=>{
-      console.log(data)
-    }
-  })
+    mutationFn: (data) => post(reactEndPoint, data, true),
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
   const handleReact = (newReaction) => {
-    if (orginalReact === null) redirect('/login')
-    console.log(react)
-    console.log(newReaction)
+    if (orginalReact === null) redirect("/login");
+    console.log(react);
+    console.log(newReaction);
     if (react === newReaction) {
-      sendReact.mutate({ 'react': react})
+      sendReact.mutate({ react: react });
       newReaction === true ? setLikes(likes - 1) : setDislikes(dislikes - 1);
       setReact(null);
-
     } else {
-      sendReact.mutate({ 'react': newReaction})
+      sendReact.mutate({ react: newReaction });
       newReaction === true ? setLikes(likes + 1) : setDislikes(dislikes + 1);
 
       if (react !== null) {
@@ -50,22 +52,26 @@ const Reactions = ({review, orginalReact}) => {
       }
       setReact(newReaction);
     }
-        console.log(react)
-    console.log(newReaction)
+    console.log(react);
+    console.log(newReaction);
   };
 
   return (
     <div className="prof-review-reaction">
       <div className="prof-up-down">
         <BiUpvote
-          className={`up-down-icon up-icon ${react === true ? 'clicked-react' : ''}`}
+          className={`up-down-icon up-icon ${
+            react === true ? "clicked-react" : ""
+          }`}
           onClick={() => handleReact(true)}
         />
         <p>{likes}</p>
       </div>
       <div className="prof-up-down">
         <BiDownvote
-          className={`up-down-icon down-icon ${react === false ? 'clicked-react' : ''}`}
+          className={`up-down-icon down-icon ${
+            react === false ? "clicked-react" : ""
+          }`}
           onClick={() => handleReact(false)}
         />
         <p>{dislikes}</p>
@@ -74,74 +80,67 @@ const Reactions = ({review, orginalReact}) => {
   );
 };
 
-const Frame = ({id})=>(
-    <iframe
-    id="myIframe"
-    src="/login"
-    frameBorder="0"
-    title="myIframe"
-    className="frame"
-    />
-)
-
-
 const Profs = () => {
   const { id } = useParams();
+  const redirect = useNavigate();
+
   const profEndPoint = api_url + "/profs/" + id;
   const userReactsEndpoint = api_url + "/profs/" + id + "/reviews/react/all";
   const profReviewsEndPoint = api_url + "/profs/" + id + "/reviews";
   const perPage = 5;
   const [page, setPage] = useState(0);
   const [reviews, setReviews] = useState([]);
-  const [sumOfRatings, setSumOfRatings] = useState('');
   const profQuery = useQuery({
     queryKey: ["getProf"],
-    queryFn: ()=> get(profEndPoint, false),
-    onError: (err)=>{
-      alert(err)
-    }
+    queryFn: () => get(profEndPoint, false),
   });
   const reviewsQuery = useQuery({
     queryKey: ["getReviews"],
-    queryFn: ()=> get(profReviewsEndPoint, false),
+    queryFn: () => get(profReviewsEndPoint, false),
     onSuccess: (data) => {
-      setPage(1)
-      const sumOfRatings = data.reduce((sum, currentItem) => {
-        return sum + currentItem.rating;
-      }, 0);
-      setSumOfRatings(sumOfRatings); // Set the sum of ratings state
+      setPage(1);
     },
-    onError: (err)=>{
-      alert(err)
-    }
   });
   const reactsQuery = useQuery({
     queryKey: ["getReacts"],
-    queryFn: ()=> get(userReactsEndpoint, true),
+    queryFn: () => get(userReactsEndpoint, true),
     enabled: Cookies.get("token") !== undefined,
-    onError: (err)=>{
-      alert(err)
-    }
   });
+
   useEffect(() => {
     if (reviewsQuery.isSuccess) {
       setReviews(
         reviews.concat(
-          reviewsQuery.data.slice(reviews.length, reviews.length + perPage)
-        )
+          reviewsQuery.data.slice(reviews.length, reviews.length + perPage),
+        ),
       );
     }
-  }, [page]);
-
+  }, [page, reviewsQuery.isFetching]);
+  const handelReview = () => {
+    document.getElementById("review-prof-box").style.display = "block";
+    document.getElementById("overlay").style.display = "block";
+  };
+  if (profQuery.isError || reactsQuery.isError || reviewsQuery.isError) {
+    return <SomethingWrong />;
+  }
   return (
     <div id="prof-container">
+      <Review id={id} text={""} ratingNum={1} overview={""} anonymous={false} />
       <div className="prof-header">
         {/*<Frame id={id}/>*/}
-        <NavBar />
+        {/*<NavBar />*/}
         <img src={bgHeader} className="prof-bground bg-img-dark" />
         <div className="prof-top">
           <div className="prof-review-box">
-            <button className="prof-review-btn prof-hide" id="prof-review-btn" >Review</button>
+            <button
+              className="prof-review-btn prof-hide"
+              id="prof-review-btn"
+              onClick={(e) => {
+                handelReview();
+              }}
+            >
+              Review
+            </button>
           </div>
           <div className="prof-img-data">
             <div className="prof-detials">
@@ -150,9 +149,7 @@ const Profs = () => {
                   {profQuery.isSuccess && (
                     <StarRating
                       valid={false}
-                      rating={Math.round(
-                        profQuery.average_rating
-                      )}
+                      rating={Math.round(profQuery.data.average_rating)}
                     />
                   )}
                   <p className="prof-reviews-num">
@@ -164,7 +161,7 @@ const Profs = () => {
                 </div>
                 <div className="prof-name">
                   <p className="prof-name-text">
-                    prof. {profQuery.isSuccess && (profQuery.data).name}
+                    prof. {profQuery.isSuccess && profQuery.data.name}
                   </p>
                 </div>
               </div>
@@ -172,7 +169,7 @@ const Profs = () => {
               <div className="prof-facilities">
                 <p>
                   {profQuery.isSuccess &&
-                    (profQuery.data).facilities
+                    profQuery.data.facilities
                       .map((obj) => obj.name)
                       .join(",")
                       .slice(0, 15) + "..."}
@@ -187,7 +184,10 @@ const Profs = () => {
               />
             </div>
             <div className="prof-review-box-mobile">
-              <button className="prof-review-btn prof-btn-mobile">
+              <button
+                className="prof-review-btn prof-btn-mobile"
+                onClick={handelReview}
+              >
                 Review
               </button>
             </div>
@@ -223,12 +223,19 @@ const Profs = () => {
                   <p className="prof-review-text-overview">{review.overview}</p>
                   <p className="prof-review-text-content">{review.text}</p>
                 </div>
-                  {reactsQuery.isSuccess && <Reactions review={review} orginalReact={(reactsQuery.data)[review.id]}/>}
-                  {!reactsQuery.isSuccess && <Reactions review={review} orginalReact={null}/>}
+                {reactsQuery.isSuccess && (
+                  <Reactions
+                    review={review}
+                    orginalReact={reactsQuery.data[review.id]}
+                  />
+                )}
+                {!reactsQuery.isSuccess && (
+                  <Reactions review={review} orginalReact={null} />
+                )}
               </div>
             ))}
           {reviewsQuery.isSuccess &&
-            reviews.length < (reviewsQuery.data).length && (
+            reviews.length < reviewsQuery.data.length && (
               <button
                 className="see-more-reviews"
                 onClick={() => setPage(page + 1)}
