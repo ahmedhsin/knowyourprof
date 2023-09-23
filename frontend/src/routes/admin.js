@@ -78,25 +78,16 @@ const Admin = () => {
   const adminQuery = useQuery({
     queryKey: ["getAdmin"],
     queryFn: () => get(adminEndPoint, true),
-    onError: (err) => {
-      //alert(err);
-    },
   });
   const pendingReviewsQuery = useQuery({
     queryKey: ["getPendingReviews"],
     queryFn: () => get(pendingReviewsEndPoint, true),
     onSuccess: () => setPageReviews(pageReviews),
-    onError: (err) => {
-      //alert(err);
-    },
   });
   const pendingProfsQuery = useQuery({
     queryKey: ["getPendingProfs"],
     queryFn: () => get(pendingProfsEndPoint, true),
     onSuccess: () => setPageProfs(pageProfs),
-    onError: (err) => {
-      //alert(err);
-    },
   });
 
   useEffect(() => {

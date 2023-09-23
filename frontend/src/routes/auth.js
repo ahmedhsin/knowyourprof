@@ -153,7 +153,6 @@ export const Register = () => {
     e.preventDefault();
     registerQuery.mutate(data);
   };
-  //console.log(registerQuery);
   return (
     <>
       {/*<NavBar />*/}

@@ -31,9 +31,7 @@ const Reactions = ({ review, orginalReact }) => {
   const reactEndPoint = api_url + "/reviews/" + review.id + "/react";
   const sendReact = useMutation({
     mutationFn: (data) => post(reactEndPoint, data, true),
-    onSuccess: (data) => {
-      //console.log(data);
-    },
+
   });
   const handleReact = (newReaction) => {
     if (orginalReact === null) redirect("/login");
