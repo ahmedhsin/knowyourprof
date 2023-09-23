@@ -43,7 +43,7 @@ def filter_profs():
 
     per_page = int(request.args.get('per_page', default=10))
     if name:
-        query = Prof.query.whooshee_search(name)
+        query = Prof.query.filter(Prof.name.like(f'%{name}%'))
     else:
         query = Prof.query
     if facility:
@@ -193,7 +193,7 @@ def filter_reviews(id):
     sort_by_rating = request.args.get('sort', default=None)
     if overview:
         query = Review.query.filter(
-            Review.prof_id == id).whooshee_search(overview)
+            Review.prof_id == id).filter(Review.overview.like(f'%{overview}%'))
     else:
         query = Review.query.filter(Review.prof_id == id)
     if sort_by_rating == 'asc':

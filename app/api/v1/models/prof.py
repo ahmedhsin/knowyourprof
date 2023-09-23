@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from .base_model import BaseModel, db, Schema, fields, post_load, whooshee
+from .base_model import BaseModel, db, Schema, fields, post_load
 """
 
 """
@@ -11,7 +11,6 @@ prof_facility_association = db.Table(
 )
 
 
-@whooshee.register_model('name', 'department')
 class Prof(BaseModel, db.Model):
     name = db.Column(db.String(60), nullable=False)
     approved_by = db.Column(db.String(60), db.ForeignKey('admin.id'))

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """Base model for all models"""
-from app import db, bcrypt, whooshee
+from app import db, bcrypt
 from datetime import datetime
 import uuid
 from marshmallow import Schema, fields, post_load

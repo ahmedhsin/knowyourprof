@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 
-from .base_model import BaseModel, db, Schema, fields, post_load, whooshee
+from .base_model import BaseModel, db, Schema, fields, post_load
 from .prof import prof_facility_association
 
 
-@whooshee.register_model('name')
 class Facility(BaseModel, db.Model):
     name = db.Column(db.String(60), nullable=False)
     profs = db.relationship(

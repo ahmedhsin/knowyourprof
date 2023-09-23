@@ -1,0 +1,1 @@
+gunicorn --access-logfile '-' --error-logfile '-' --bind 127.0.0.1:4000 run:app
