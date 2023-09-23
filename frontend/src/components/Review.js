@@ -22,7 +22,7 @@ const Review = (props) => {
     text: "",
     rating: "",
     overview: "",
-    anonymous: "",
+    anonymous: false,
   });
   useEffect(() => {
     setFormData({
@@ -76,7 +76,7 @@ const Review = (props) => {
       updateReview.reset();
     }, 1500);
   };
-
+  console.log(formData)
   return (
     <>
       <div id="overlay"></div>
