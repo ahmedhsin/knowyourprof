@@ -177,7 +177,6 @@ const Account = () => {
               </button>
             )}
         </div>
-        <Footer />
       </div>
     </div>
   );

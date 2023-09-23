@@ -24,18 +24,12 @@ const Home = () => {
     queryKey: ["searchProfs"],
     queryFn: () => get(profsEndPoint + queryProf, false),
     enabled: prof.length >= 3,
-    onError: (err) => {
-      //alert(err);
-    },
   });
 
   const facilityQuery = useQuery({
     queryKey: ["searchFacility"],
     queryFn: () => get(facilitiesEndPoint + queryFacility, false),
     enabled: facility.length >= 3,
-    onError: (err) => {
-      //alert(err);
-    },
   });
 
   const select = (e) => {
@@ -90,7 +84,7 @@ const Home = () => {
                 })}
             </div>
           </div>
-          <div className="suggest-box-f" onClick={(e) => //console.log("er")}>
+          <div className="suggest-box-f">
             <input
               type="text"
               id="facility"
@@ -121,7 +115,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

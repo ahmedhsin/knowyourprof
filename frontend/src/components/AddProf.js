@@ -1,3 +1,4 @@
+02 @@
 import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -25,9 +26,6 @@ const AddProf = () => {
 
   const addProf = useMutation({
     mutationFn: (data) => post(addProfEndPoint, data, true),
-    onSuccess: (data) => {
-      //console.log(data);
-    },
   });
 
   const navigate = useNavigate();
@@ -57,9 +55,7 @@ const AddProf = () => {
     queryKey: ["searchFacility"],
     queryFn: () => get(facilitiesEndPoint + queryFacility, false),
     enabled: facility.length >= 3,
-    onError: (err) => {
-      alert(err);
-    },
+
   });
 
   const select = (e) => {
@@ -113,7 +109,7 @@ const AddProf = () => {
               required
             />*/}
             {
-              <div className="suggest-box-f" onClick={(e) => //console.log("er")}>
+              <div className="suggest-box-f">
                 <input
                   type="text"
                   id="facility"

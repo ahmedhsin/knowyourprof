@@ -245,7 +245,6 @@ const Profs = () => {
             )}
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

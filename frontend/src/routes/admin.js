@@ -278,7 +278,6 @@ const Admin = () => {
               </button>
             )}
         </div>
-        <Footer />
       </div>
     </div>
   );
