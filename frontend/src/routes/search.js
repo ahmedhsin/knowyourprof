@@ -82,7 +82,7 @@ const Search = () => {
                         {prof.facilities
                           .map((obj) => obj.name)
                           .join(",")
-                          .slice(0, 15) + "..."}
+                          .slice(0, 25) + "..."}
                       </p>
                       <p className="prof-review-user-date">
                         {prof.total_reviews} reviews

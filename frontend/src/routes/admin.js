@@ -254,7 +254,7 @@ const Admin = () => {
                         {prof.facilities
                           .map((obj) => obj.name)
                           .join(",")
-                          .slice(0, 15) + "..."}
+                          .slice(0, 25) + "..."}
                       </p>
                     </div>
                     <img

@@ -27,7 +27,7 @@ def filter_fa():
     limit = int(request.args.get('limit', default=0))
     per_page = int(request.args.get('per_page', default=10))
     if name:
-        query = Facility.query.filter(Facility.name.like(f'%{name}%')).all()
+        query = Facility.query.filter(Facility.name.like(f'%{name}%'))
     else:
         query = Facility.query
     if not limit:

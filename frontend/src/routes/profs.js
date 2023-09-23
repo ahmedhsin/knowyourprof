@@ -91,18 +91,18 @@ const Profs = () => {
   const [page, setPage] = useState(0);
   const [reviews, setReviews] = useState([]);
   const profQuery = useQuery({
-    queryKey: ["getProf"],
+    queryKey: [`getProf_${id}`],
     queryFn: () => get(profEndPoint, false),
   });
   const reviewsQuery = useQuery({
-    queryKey: ["getReviews"],
+    queryKey: [`getReviews_${id}`],
     queryFn: () => get(profReviewsEndPoint, false),
     onSuccess: (data) => {
       setPage(1);
     },
   });
   const reactsQuery = useQuery({
-    queryKey: ["getReacts"],
+    queryKey: [`getReacts${id}`],
     queryFn: () => get(userReactsEndpoint, true),
     enabled: Cookies.get("token") !== undefined,
   });
@@ -172,7 +172,7 @@ const Profs = () => {
                     profQuery.data.facilities
                       .map((obj) => obj.name)
                       .join(",")
-                      .slice(0, 15) + "..."}
+                      .slice(0, 25) + "..."}
                 </p>
               </div>
             </div>
