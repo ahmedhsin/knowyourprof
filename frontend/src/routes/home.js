@@ -25,7 +25,7 @@ const Home = () => {
     queryFn: () => get(profsEndPoint + queryProf, false),
     enabled: prof.length >= 3,
     onError: (err) => {
-      alert(err);
+      //alert(err);
     },
   });
 
@@ -34,7 +34,7 @@ const Home = () => {
     queryFn: () => get(facilitiesEndPoint + queryFacility, false),
     enabled: facility.length >= 3,
     onError: (err) => {
-      alert(err);
+      //alert(err);
     },
   });
 
@@ -90,7 +90,7 @@ const Home = () => {
                 })}
             </div>
           </div>
-          <div className="suggest-box-f" onClick={(e) => console.log("er")}>
+          <div className="suggest-box-f" onClick={(e) => //console.log("er")}>
             <input
               type="text"
               id="facility"

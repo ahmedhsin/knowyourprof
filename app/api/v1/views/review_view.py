@@ -3,7 +3,7 @@ from . import Blueprint, db, jsonify, make_response
 from . import Review, ReviewSchema, request, Prof
 from . import credentials, jwt_required, get_jwt_identity, getId
 from datetime import datetime
-bp = Blueprint('reviews', __name__, url_prefix='/reviews')
+bp = Blueprint('reviews', __name__, url_prefix='/api/reviews')
 reviewSchema = ReviewSchema()
 
 

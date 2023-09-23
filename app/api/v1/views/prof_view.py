@@ -5,7 +5,7 @@ from . import Review, ReviewSchema, request, Reaction
 from sqlalchemy import and_
 from . import credentials, jwt_required, get_jwt_identity, getId
 
-bp = Blueprint('profs', __name__, url_prefix='/profs')
+bp = Blueprint('profs', __name__, url_prefix='/api/profs')
 
 profSchema = ProfSchema()
 reviewSchemaOne = ReviewSchema()

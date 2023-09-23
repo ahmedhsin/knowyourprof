@@ -70,7 +70,7 @@ app.register_blueprint(facility_view.bp)
 app.register_blueprint(account_view.bp)
 
 # Default route
-@app.route('/')
+@app.route('/api')
 def home():
     return "Hello World"
 

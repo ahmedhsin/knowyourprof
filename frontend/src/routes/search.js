@@ -28,7 +28,7 @@ const Search = () => {
     queryFn: () => get(profsEndPoint + queryProf, false),
     enabled: prof.length >= 3,
     onSuccess: (data) => {
-      console.log(data);
+      //console.log(data);
       setPage(1);
     },
   });

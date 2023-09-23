@@ -79,7 +79,7 @@ const Admin = () => {
     queryKey: ["getAdmin"],
     queryFn: () => get(adminEndPoint, true),
     onError: (err) => {
-      alert(err);
+      //alert(err);
     },
   });
   const pendingReviewsQuery = useQuery({
@@ -87,7 +87,7 @@ const Admin = () => {
     queryFn: () => get(pendingReviewsEndPoint, true),
     onSuccess: () => setPageReviews(pageReviews),
     onError: (err) => {
-      alert(err);
+      //alert(err);
     },
   });
   const pendingProfsQuery = useQuery({
@@ -95,7 +95,7 @@ const Admin = () => {
     queryFn: () => get(pendingProfsEndPoint, true),
     onSuccess: () => setPageProfs(pageProfs),
     onError: (err) => {
-      alert(err);
+      //alert(err);
     },
   });
 

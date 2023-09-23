@@ -5,7 +5,7 @@ from . import Review, ReviewSchema, request
 from sqlalchemy import and_
 facilitySchema = FacilitySchema()
 
-bp = Blueprint('facilities', __name__, url_prefix='/facilities')
+bp = Blueprint('facilities', __name__, url_prefix='/api/facilities')
 
 
 @bp.route('/all', methods=['GET'])

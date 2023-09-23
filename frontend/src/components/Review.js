@@ -36,16 +36,16 @@ const Review = (props) => {
   const review = useMutation({
     mutationFn: (data) => post(reviewEndPoint, data, true),
     onSuccess: (data) => {
-      console.log(data);
+      //console.log(data);
     },
   });
   const updateReview = useMutation({
     mutationFn: (data) => put(updateReviewEndPoint, data, true),
     onSuccess: (data) => {
-      console.log(data);
+      //console.log(data);
       queryClient.invalidateQueries("getPendingReviews");
     },
-    onError: () => console.log("error"),
+    onError: () => //console.log("error"),
   });
 
   const handleInputChange = (e) => {

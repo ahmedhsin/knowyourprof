@@ -4,7 +4,7 @@ from . import Review, ReviewSchema, request
 from . import Admin, Prof, ProfSchema, FacilitySchema
 from . import credentials, jwt_required, get_jwt_identity, getId
 
-bp = Blueprint('admin', __name__, url_prefix='/admin')
+bp = Blueprint('admin', __name__, url_prefix='/api/admin')
 profSchema = ProfSchema()
 facilitySchema = FacilitySchema(many=True)
 

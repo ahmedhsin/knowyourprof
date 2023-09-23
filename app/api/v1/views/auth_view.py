@@ -2,7 +2,7 @@
 from . import Blueprint, db, jsonify, request
 from . import User, UserSchema, AdminSchema, Admin, bcrypt
 from . import create_access_token, jwt_required, get_jwt_identity
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 userSchema = UserSchema()
 adminSchema = AdminSchema()
 

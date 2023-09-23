@@ -26,7 +26,7 @@ const AddProf = () => {
   const addProf = useMutation({
     mutationFn: (data) => post(addProfEndPoint, data, true),
     onSuccess: (data) => {
-      console.log(data);
+      //console.log(data);
     },
   });
 
@@ -113,7 +113,7 @@ const AddProf = () => {
               required
             />*/}
             {
-              <div className="suggest-box-f" onClick={(e) => console.log("er")}>
+              <div className="suggest-box-f" onClick={(e) => //console.log("er")}>
                 <input
                   type="text"
                   id="facility"

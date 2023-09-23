@@ -3,7 +3,7 @@ from . import Blueprint, db, jsonify, make_response, request
 from . import User, UserSchema, bcrypt, Review, AdminSchema, Admin
 from . import credentials, jwt_required, get_jwt_identity, getId
 
-bp = Blueprint('account', __name__, url_prefix='/account')
+bp = Blueprint('account', __name__, url_prefix='/api/account')
 userSchema = UserSchema()
 adminSchema = AdminSchema()
 

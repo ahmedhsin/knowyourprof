@@ -32,13 +32,13 @@ const Reactions = ({ review, orginalReact }) => {
   const sendReact = useMutation({
     mutationFn: (data) => post(reactEndPoint, data, true),
     onSuccess: (data) => {
-      console.log(data);
+      //console.log(data);
     },
   });
   const handleReact = (newReaction) => {
     if (orginalReact === null) redirect("/login");
-    console.log(react);
-    console.log(newReaction);
+    //console.log(react);
+    //console.log(newReaction);
     if (react === newReaction) {
       sendReact.mutate({ react: react });
       newReaction === true ? setLikes(likes - 1) : setDislikes(dislikes - 1);
@@ -52,8 +52,8 @@ const Reactions = ({ review, orginalReact }) => {
       }
       setReact(newReaction);
     }
-    console.log(react);
-    console.log(newReaction);
+    //console.log(react);
+    //console.log(newReaction);
   };
 
   return (

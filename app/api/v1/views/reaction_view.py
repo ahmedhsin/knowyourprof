@@ -6,7 +6,7 @@ from sqlalchemy import and_
 from . import credentials, jwt_required, get_jwt_identity, getId
 
 
-bp = Blueprint('react', __name__)
+bp = Blueprint('react', __name__, url_prefix="/api/")
 reactionSchema = ReactionSchema()
 
 
