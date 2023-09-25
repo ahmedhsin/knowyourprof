@@ -60,7 +60,7 @@ const AddProf = () => {
   const select = (e) => {
     e.stopPropagation();
     e.target.focus();
-    document.getElementById("facility").value = e.target.innerText;
+    document.getElementById("facility-prof").value = e.target.innerText;
     setFormData({
       ...formData,
       facility: e.target.innerText,
@@ -111,7 +111,7 @@ const AddProf = () => {
               <div className="suggest-box-f">
                 <input
                   type="text"
-                  id="facility"
+                  id="facility-prof"
                   className="search-facility review-prof-inputs review-prof-inputs-1"
                   name="facility"
                   placeholder="facility"

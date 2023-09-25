@@ -76,12 +76,12 @@ const Review = (props) => {
       updateReview.reset();
     }, 1500);
   };
-  console.log(formData)
   return (
     <>
       <div id="overlay"></div>
       <div id="review-prof-box">
-        {review.isError && <div className="error">Something went wrong !</div>}
+        {review.isError && review.error.message.includes("409") && (<div className="error">You can't review the same professor twice!</div>) ||
+          review.isError && <div className="error">Something went wrong !</div>}
         {review.isSuccess && (
           <div className="success">
             successfully submitted! Awaiting approval

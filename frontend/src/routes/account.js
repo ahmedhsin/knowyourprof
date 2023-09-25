@@ -139,6 +139,9 @@ const Account = () => {
                             ? review["created_at"]
                             : "edited " + review["updated_at"])}
                       </p>
+                      <p className="prof-review-user-date">
+                        {review['approved'] ? 'Approved' : 'Pending Further Review'}
+                      </p>
                     </div>
                     <img
                       src={require("../assets/profile/p.jpg")}

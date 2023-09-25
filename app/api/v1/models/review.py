@@ -36,6 +36,7 @@ class Review(BaseModel, db.Model):
         tmp['created_at'] = review.created_at.strftime('%Y-%m-%d %H:%M')
         tmp['updated_at'] = review.updated_at.strftime('%Y-%m-%d %H:%M')
         tmp['prof_id'] = review.prof_id
+        tmp['approved'] = (review.approved_by != None)
         if review.anonymous:
             tmp['user'] = 'anonymous'
         else:
