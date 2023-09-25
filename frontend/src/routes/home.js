@@ -35,7 +35,8 @@ const Home = () => {
   const select = (e) => {
     e.stopPropagation();
     e.target.focus();
-    document.getElementById("facility").value = e.target.innerText;
+    setFacility(e.target.innerText)
+    //document.getElementById("facility").value = e.target.innerText;
   };
 
   return (
@@ -91,6 +92,7 @@ const Home = () => {
               className="search-facility"
               name="facility"
               autoComplete="off"
+              value={facility}
               onClick={(e) => {
                 e.stopPropagation();
               }}

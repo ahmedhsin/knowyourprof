@@ -78,7 +78,7 @@ const Reactions = ({ review, orginalReact }) => {
   );
 };
 
-const Profs = () => {
+const Profs = ({auth}) => {
   const { id } = useParams();
   const redirect = useNavigate();
 
@@ -100,7 +100,7 @@ const Profs = () => {
     },
   });
   const reactsQuery = useQuery({
-    queryKey: [`getReacts${id}`],
+    queryKey: [`getReacts_${id}`],
     queryFn: () => get(userReactsEndpoint, true),
     enabled: Cookies.get("token") !== undefined,
   });
@@ -130,7 +130,8 @@ const Profs = () => {
         <img src={bgHeader} className="prof-bground bg-img-dark" />
         <div className="prof-top">
           <div className="prof-review-box">
-            <button
+            {auth.isLogged && auth.type === 'user' &&
+              <button
               className="prof-review-btn prof-hide"
               id="prof-review-btn"
               onClick={(e) => {
@@ -138,7 +139,7 @@ const Profs = () => {
               }}
             >
               Review
-            </button>
+            </button>}
           </div>
           <div className="prof-img-data">
             <div className="prof-detials">
@@ -169,8 +170,7 @@ const Profs = () => {
                   {profQuery.isSuccess &&
                     profQuery.data.facilities
                       .map((obj) => obj.name)
-                      .join(",")
-                      .slice(0, 25) + "..."}
+                      .join(",")}
                 </p>
               </div>
             </div>
@@ -182,12 +182,14 @@ const Profs = () => {
               />
             </div>
             <div className="prof-review-box-mobile">
+            { auth.isLogged && auth.type === 'user' &&
               <button
                 className="prof-review-btn prof-btn-mobile"
                 onClick={handelReview}
               >
                 Review
               </button>
+            }
             </div>
           </div>
         </div>
@@ -197,7 +199,6 @@ const Profs = () => {
               <div className="prof-review">
                 <div className="prof-review-header">
                   <div>
-                    <img src={ellipsis} className="prof-option-bar" />
                   </div>
                   <div className="prof-review-user">
                     <StarRating valid={false} rating={review.rating} />

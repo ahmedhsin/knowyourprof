@@ -37,7 +37,7 @@ function App() {
           <Route path="login" element={!auth.isLogged ? <Login setAuth={setAuth} /> : <NotAuth/>} />
           <Route path="logout" element={auth.isLogged ? <Logout setAuth={setAuth}/> : <NotAuth/>} />
           <Route path="register" element={!auth.isLogged ? <Register/> : <NotAuth />} />
-          <Route path="profs/:id" element={<Profs />} />
+          <Route path="profs/:id" element={<Profs auth={auth}/>} />
           <Route path="admin" element={auth.type==='admin' ? <Admin /> : <NotAuth/>} />
           <Route path="search/:prof/:facility" element={<Search />} />
           <Route path="account" element={auth.type==='user' ? <Account /> : <NotAuth />} />

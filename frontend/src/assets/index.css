@@ -75,3 +75,9 @@ body{
 #sp-link{
     padding:0;
 }
+
+@media only screen and (max-width: 1000px) {
+    .prof-review-mob{
+        margin-top:80px;
+    }
+}

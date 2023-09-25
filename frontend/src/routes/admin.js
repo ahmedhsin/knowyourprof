@@ -16,17 +16,26 @@ import Cookies from "js-cookie";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
 import { BiUpvote, BiDownvote } from "react-icons/bi";
-
+import { useQueryClient } from "@tanstack/react-query";
 const api_url = process.env.REACT_APP_API_URL;
 
-const ManpulatePending = ({ type, id }) => {
+const ManpulatePending = ({ type, id, prof_id }) => {
+  const queryClient = useQueryClient();
   const approve = `${api_url}/admin/${type}/${id}/approve`;
   const reject = `${api_url}/admin/${type}/${id}/reject`;
   const sendApprove = useMutation({
     mutationFn: (data) => post(approve, {}, true),
+    onSuccess:() => {
+      queryClient.invalidateQueries("getAccountReviews");
+      if (type === 'reviews')
+        queryClient.invalidateQueries(`getReviews_${prof_id}`);
+    }
   });
   const sendReject = useMutation({
     mutationFn: () => post(reject, {}, true),
+    onSuccess: ()=>{
+      queryClient.invalidateQueries("getAccountReviews");
+    }
   });
   return (
     <div className="prof-review-reaction">
@@ -54,15 +63,6 @@ const ManpulatePending = ({ type, id }) => {
   );
 };
 
-const Frame = ({ id }) => (
-  <iframe
-    id="myIframe"
-    src="/login"
-    frameBorder="0"
-    title="myIframe"
-    className="frame"
-  />
-);
 
 const Admin = () => {
   const adminEndPoint = api_url + "/account/admin";
@@ -211,7 +211,7 @@ const Admin = () => {
                   <p className="prof-review-text-overview">{review.overview}</p>
                   <p className="prof-review-text-content">{review.text}</p>
                 </div>
-                <ManpulatePending type={"reviews"} id={review.id} />
+                <ManpulatePending type={"reviews"} id={review.id} prof_id={review.prof_id} />
               </div>
             ))}
 

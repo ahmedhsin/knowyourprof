@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const AddProf = () => {
   const api_url = process.env.REACT_APP_API_URL;
   const addProfEndPoint = api_url + "/profs/new";
+  const queryClient = useQueryClient();
   const [facility, setFacility] = useState("");
   const facilitiesEndPoint = api_url + "/facilities/filter";
   const queryFacility = `?name=${facility}&limit=5`;
@@ -25,6 +26,9 @@ const AddProf = () => {
 
   const addProf = useMutation({
     mutationFn: (data) => post(addProfEndPoint, data, true),
+    onSuccess: ()=>{
+      queryClient.invalidateQueries("getPendingProfs");
+    },
   });
 
   const navigate = useNavigate();

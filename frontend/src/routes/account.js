@@ -63,7 +63,7 @@ const Account = () => {
     queryFn: () => get(userEndPoint, true),
   });
   const ReviewsQuery = useQuery({
-    queryKey: ["getPendingReviews"],
+    queryKey: ["getAccountReviews"],
     queryFn: () => get(ReviewsEndPoint, true),
     onSuccess: () => {
       setReviews([]);
@@ -132,7 +132,6 @@ const Account = () => {
                   <div className="prof-review-user">
                     <StarRating valid={false} rating={review.rating} />
                     <div>
-                      <p className="prof-review-user-name">{review.user}</p>
                       <p className="prof-review-user-date">
                         {review["created_at"] &&
                           (review["created_at"] === review["updated_at"]

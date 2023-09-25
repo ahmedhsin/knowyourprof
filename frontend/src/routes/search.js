@@ -4,6 +4,7 @@ import get from "../func/get";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import NavBar from "../components/Nav";
 import bgHeader from "../assets/bg.jpg";
+import Bground from "../components/Bground"
 import "../assets/profs.css";
 import up from "../assets/icons/up.svg";
 import down from "../assets/icons/down.svg";
@@ -20,7 +21,9 @@ const Search = () => {
   const [page, setPage] = useState(0);
   const [profs, setProfs] = useState([]);
   const perPage = 1;
-  const queryProf = `?limit=100&name=${prof}${
+  const queryProf = `?limit=100${
+    prof === "all" ? "" : `&name=${prof}`
+  }${
     facility === "all" ? "" : `&facility=${facility}`
   }`;
   const profQuery = useQuery({
@@ -47,7 +50,7 @@ const Search = () => {
 
   return (
     <div id="prof-container">
-      <div className="prof-header">
+      <div className="prof-header prof-review-mob">
         {/*<Frame id={id}/>*/}
         {/*<NavBar />*/}
         <div className="prof-reviews">
@@ -59,7 +62,7 @@ const Search = () => {
           )}
           {profQuery.isSuccess &&
             profs.map((prof) => (
-              <div className="prof-review" key={prof.id}>
+              <div className="prof-review " key={prof.id}>
                 <div className="prof-review-header">
                   <div></div>
                   <div className="prof-review-user">

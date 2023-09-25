@@ -35,12 +35,16 @@ const Review = (props) => {
   }, [id]);
   const review = useMutation({
     mutationFn: (data) => post(reviewEndPoint, data, true),
+    onSuccess: ()=> {
+      queryClient.invalidateQueries("getPendingReviews");
+    }
   });
   const updateReview = useMutation({
     mutationFn: (data) => put(updateReviewEndPoint, data, true),
     onSuccess: (data) => {
       //console.log(data);
       queryClient.invalidateQueries("getPendingReviews");
+      queryClient.invalidateQueries("getAccountReviews");
     },
   });
 
