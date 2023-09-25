@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const Review = (props) => {
   const queryClient = useQueryClient();
-  const { id, text, ratingNum, overview, anonymous, type, setSelected } = props;
+  const { id, text, ratingNum, overview, anonymous, type, setSelected, prof_id } = props;
   const api_url = process.env.REACT_APP_API_URL;
   const profEndPoint = api_url + "/profs/" + id;
   const reviewEndPoint = api_url + "/profs/" + id + "/reviews/new";
@@ -44,6 +44,7 @@ const Review = (props) => {
     onSuccess: (data) => {
       //console.log(data);
       queryClient.invalidateQueries("getPendingReviews");
+      queryClient.invalidateQueries(`getReviews_${prof_id}`);
       queryClient.invalidateQueries("getAccountReviews");
     },
   });

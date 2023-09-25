@@ -16,13 +16,19 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import Review from "../components/Review";
 import SomethingWrong from "../components/SomethingWrong";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
+import { useQueryClient } from "@tanstack/react-query";
 
 const api_url = process.env.REACT_APP_API_URL;
 
-const ManpulateReview = ({ id, review, setSelected }) => {
+const ManpulateReview = ({ id, review, setSelected, prof_id }) => {
   const EndPoint = `${api_url}/reviews/${review.id}`;
+  const queryClient = useQueryClient();
+
   const sendDelete = useMutation({
     mutationFn: () => delet(EndPoint, {}, true),
+    onSuccess: () => {
+      queryClient.invalidateQueries(`getReviews_${prof_id}`)
+    }
   });
   return (
     <div className="prof-review-reaction">
@@ -88,6 +94,7 @@ const Account = () => {
         {/*<Frame id={id}/>*/}
         {/*<NavBar />*/}
         <Review
+          prof_id={selectedReview.prof_id}
           id={selectedReview.id}
           text={selectedReview.text}
           ratingNum={selectedReview.rating}
@@ -164,6 +171,7 @@ const Account = () => {
                 <ManpulateReview
                   type={"reviews"}
                   review={review}
+                  prof_id={review.prof_id}
                   setSelected={setSelectedReview}
                 />
               </div>
