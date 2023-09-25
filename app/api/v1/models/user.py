@@ -19,9 +19,9 @@ class User(BaseModel, db.Model):
     password = db.Column(db.String(60), nullable=False)
     gender = db.Column(db.Boolean(), nullable=False)
     reviews = db.relationship('Review', backref='user',
-                              cascade='all, delete-orphan')
+                              cascade="all,delete")
     reacts = db.relationship('Reaction', backref='user',
-                             cascade='all, delete-orphan')
+                             cascade="all,delete")
 
     def __repr__(self):
         return f"user: {self.name}, email: {self.email}"

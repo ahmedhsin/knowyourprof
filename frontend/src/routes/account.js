@@ -46,6 +46,7 @@ const ManpulateReview = ({ id, review, setSelected, prof_id }) => {
         className="prof-review-btn"
         onClick={(e) => {
           sendDelete.mutate();
+          console.log('test')
           e.target.parentElement.innerHTML =
             '<p className="admin-manpulate" style="color: gray">deleted</p>';
         }}

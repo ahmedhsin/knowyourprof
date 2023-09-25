@@ -19,7 +19,7 @@ class Review(BaseModel, db.Model):
     prof_id = db.Column(db.String(60), db.ForeignKey(
         'prof.id'), nullable=False)
     approved_by = db.Column(db.String(60), db.ForeignKey('admin.id'))
-    reacts = db.relationship('Reaction', backref='review')
+    reacts = db.relationship('Reaction', backref='review', cascade="all,delete")
     likes = db.Column(db.Integer(), default=0)
     dislikes = db.Column(db.Integer(), default=0)
     anonymous = db.Column(db.Boolean(), default=True)
