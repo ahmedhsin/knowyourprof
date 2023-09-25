@@ -61,7 +61,7 @@ def filter_profs():
             facilities = facilitySchema.dump(prof.facilities)
             prof_ser['facilities'] = facilities
 
-            prof_ser['total_reviews'] = len(prof.reviews)
+            prof_ser['total_reviews'] = len([review for review in prof.reviews if review.approved_by is not None])
             try:
                 prof_ser['average_rating'] = prof.total_review_stars / \
                     len(prof.reviews)

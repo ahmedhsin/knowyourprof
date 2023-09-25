@@ -20,7 +20,7 @@ const Search = () => {
   const profsEndPoint = api_url + "/profs/filter";
   const [page, setPage] = useState(0);
   const [profs, setProfs] = useState([]);
-  const perPage = 1;
+  const perPage = 10;
   const queryProf = `?limit=100${
     prof === "all" ? "" : `&name=${prof}`
   }${
