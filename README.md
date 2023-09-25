@@ -48,32 +48,34 @@
 
 
 ## 📂 Repository Structure
-├── app/
-│   ├── api/
-│   │   ├── __init__.py
-│   │   ├── models/
-│   │   └── views/
-│   ├── database.db
-│   └── __init__.py
-├── bin/
-├── deploymenyConfig/        # Deployment configuration files
-├── frontend/
-│   ├── node_modules/
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── public/
-│   ├── README.md
-│   ├── src/
-│   │   ├── App.js
-│   │   ├── assets/
-│   │   ├── components/
-│   │   ├── func/
-│   │   ├── index.js
-│   │   └── routes/
-│   └── ...
-├── README.md                # Project documentation
-├── requirements.txt         # Python dependencies
-├── run.py                   # Application entry point
+- **app/**
+  - **api/**
+    - __init__.py
+    - **models/**
+    - **views/**
+  - database.db
+  - __init__.py
+- **bin/**
+- **deploymenyConfig/**
+  - (Deployment configuration files)
+- **frontend/**
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - public/
+  - README.md
+  - src/
+    - App.js
+    - assets/
+    - components/
+    - func/
+    - index.js
+    - routes/
+  - ...
+- README.md (Project documentation)
+- requirements.txt (Python dependencies)
+- run.py (Application entry point)
+
 
 
 
