@@ -68,8 +68,8 @@ export const Login = ({ setAuth }) => {
                   <input
                     type="radio"
                     name="type"
+                    checked={type==='user' ? 'true' : ''}
                     className="radio-auth"
-                    checked
                     value="user"
                     onChange={(e) => setType(e.target.value)}
                   />
