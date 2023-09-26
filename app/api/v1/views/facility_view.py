@@ -13,8 +13,9 @@ def all_fa():
     facilities = Facility.query.all()
     allFacilities = []
     for facility in facilities:
-        facility_ser = facilitySchema.dump(facility)
-        allFacilities.append(facility_ser)
+        if facility.approved_by:
+            facility_ser = facilitySchema.dump(facility)
+            allFacilities.append(facility_ser)
     return jsonify(allFacilities)
 
 
@@ -39,8 +40,9 @@ def filter_fa():
         Facilities = query.limit(limit).all()
     allFacilities = []
     for facility in Facilities:
-        facility_ser = facilitySchema.dump(facility)
-        allFacilities.append(facility_ser)
+        if facility.approved_by:
+            facility_ser = facilitySchema.dump(facility)
+            allFacilities.append(facility_ser)
     if not limit:
         return jsonify({'hasNext': hasNext, 'allFacilities': allFacilities})
     else:

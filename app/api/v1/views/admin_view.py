@@ -98,6 +98,7 @@ def approve_prof(id):
     if prof.approved_by:
         return jsonify({"error": "Already approved"}), 409
     prof.approved_by = getId()
+    prof.facilities[0].approved_by = getId()
     db.session.commit()
     return jsonify({"success": "Approved"}), 200
 
@@ -112,6 +113,8 @@ def reject_prof(id):
         return jsonify({"error": "Not found"}), 404
     if prof.approved_by:
         return jsonify({"error": "Already approved"}), 409
+    if len(prof.facilities[0].profs) == 1:
+        db.session.delete(prof.facilities[0])
     db.session.delete(prof)
     db.session.commit()
     return jsonify({"success": "Rejected"}), 200

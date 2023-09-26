@@ -10,6 +10,7 @@ class Admin(BaseModel, db.Model):
     gender = db.Column(db.Boolean(), nullable=False)
     approved_profs = db.relationship('Prof', backref='admin', cascade="all,delete")
     approved_reviews = db.relationship('Review', backref='admin', cascade="all,delete")
+    approved_facilities = db.relationship('Facility', backref='admin', cascade="all,delete")
 
     def __repr__(self):
         return f"user: {self.name}"
