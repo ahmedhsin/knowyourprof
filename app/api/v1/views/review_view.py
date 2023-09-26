@@ -43,6 +43,8 @@ def manpulate_review(id):
         return jsonify({"success": "Deleted"}), 200
     else:
         data = request.get_json()
+        if review.approved_by:
+            professor.total_review_stars -= review.rating
         if data.get('text'):
             review.text = data.get('text')
         if data.get('rating'):
@@ -51,8 +53,6 @@ def manpulate_review(id):
             review.overview = data.get('overview')
         if data.get('anonymous') != None:
             review.anonymous = data.get('anonymous')
-        if review.approved_by:
-            professor.total_review_stars -= review.rating
         review.approved_by = None
         db.session.commit()
     review.updated_at = datetime.now()

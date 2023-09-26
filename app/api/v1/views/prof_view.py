@@ -21,10 +21,11 @@ def all_profs():
             prof_ser = profSchema.dump(prof)
             facilities = facilitySchema.dump(prof.facilities)
             prof_ser['facilities'] = facilities
-            prof_ser['total_reviews'] = prof.total_review_stars
+            prof_ser['total_reviews'] = len([review for review in prof.reviews if review.approved_by is not None])
+
             try:
                 prof_ser['average_rating'] = prof.total_review_stars / \
-                    len(prof.reviews)
+                    prof_ser['total_reviews']
             except Exception:
                 prof_ser['average_rating'] = 0
             allProfs.append(prof_ser)
@@ -64,7 +65,7 @@ def filter_profs():
             prof_ser['total_reviews'] = len([review for review in prof.reviews if review.approved_by is not None])
             try:
                 prof_ser['average_rating'] = prof.total_review_stars / \
-                    len(prof.reviews)
+                    prof_ser['total_reviews']
             except Exception:
                 prof_ser['average_rating'] = 0
             allProfs.append(prof_ser)
@@ -81,11 +82,10 @@ def get_prof(id):
         return jsonify({"error": "Not found"}), 404
     prof_ser = profSchema.dump(professor)
     prof_ser['facilities'] = facilitySchema.dump(professor.facilities)
-    prof_ser['total_reviews'] = len(professor.reviews)
-
+    prof_ser['total_reviews'] = len([review for review in professor.reviews if review.approved_by is not None])
     try:
         prof_ser['average_rating'] = professor.total_review_stars / \
-            len(professor.reviews)
+            prof_ser['total_reviews']
     except Exception:
         prof_ser['average_rating'] = 0
     print(prof_ser['average_rating'])

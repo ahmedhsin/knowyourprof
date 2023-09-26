@@ -27,7 +27,7 @@ const Search = () => {
     facility === "all" ? "" : `&facility=${facility}`
   }`;
   const profQuery = useQuery({
-    queryKey: ["searchProfs"],
+    queryKey: ["searchProfs_searchPage"],
     queryFn: () => get(profsEndPoint + queryProf, false),
     enabled: prof.length >= 3,
     onSuccess: (data) => {
@@ -84,7 +84,7 @@ const Search = () => {
                         {prof.facilities
                           .map((obj) => obj.name)
                           .join(",")
-                          .slice(0, 25) + "..."}
+                          .slice(0, 30) + "..."}
                       </p>
                       <p className="prof-review-user-date">
                         {prof.total_reviews} reviews

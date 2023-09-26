@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoMdStar } from "react-icons/io";
 import "../assets/starrating.css";
 const StarRating = ({ valid, rating, setRating }) => {

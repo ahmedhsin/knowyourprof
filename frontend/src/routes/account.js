@@ -46,7 +46,6 @@ const ManpulateReview = ({ id, review, setSelected, prof_id }) => {
         className="prof-review-btn"
         onClick={(e) => {
           sendDelete.mutate();
-          console.log('test')
           e.target.parentElement.innerHTML =
             '<p className="admin-manpulate" style="color: gray">deleted</p>';
         }}
@@ -61,7 +60,7 @@ const Account = () => {
   const userEndPoint = api_url + "/account/user";
   const ReviewsEndPoint = api_url + "/account/reviews";
 
-  const perPage = 5;
+  const perPage = 10;
   const [pageReviews, setPageReviews] = useState(0);
   const [reviews, setReviews] = useState([]);
   const [selectedReview, setSelectedReview] = useState([]);
@@ -86,14 +85,13 @@ const Account = () => {
       );
     }
   }, [pageReviews, ReviewsQuery.isFetching]);
+
   if (ReviewsQuery.isError || userQuery.isError) {
     return <SomethingWrong />;
   }
   return (
     <div id="prof-container">
       <div className="prof-header">
-        {/*<Frame id={id}/>*/}
-        {/*<NavBar />*/}
         <Review
           prof_id={selectedReview.prof_id}
           id={selectedReview.id}
@@ -102,6 +100,7 @@ const Account = () => {
           overview={selectedReview.overview}
           anonymous={selectedReview.user == "anonymous"}
           setSelected={setSelectedReview}
+          selected = {selectedReview}
           type={1}
         />
         <img src={bgHeader} className="prof-bground bg-img-dark" />
@@ -178,7 +177,7 @@ const Account = () => {
               </div>
             ))}
 
-          {ReviewsQuery.isSuccess &&
+          {ReviewsQuery.isSuccess && !ReviewsQuery.isFetching&&
             reviews.length < ReviewsQuery.data.length && (
               <button
                 className="see-more-reviews"

@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const Review = (props) => {
   const queryClient = useQueryClient();
-  const { id, text, ratingNum, overview, anonymous, type, setSelected, prof_id } = props;
+  const { id, text, ratingNum, overview, anonymous, type, setSelected, prof_id, selected } = props;
   const api_url = process.env.REACT_APP_API_URL;
   const profEndPoint = api_url + "/profs/" + id;
   const reviewEndPoint = api_url + "/profs/" + id + "/reviews/new";
@@ -43,6 +43,12 @@ const Review = (props) => {
     mutationFn: (data) => put(updateReviewEndPoint, data, true),
     onSuccess: (data) => {
       //console.log(data);
+      const rev = {...selected}
+      rev.text = formData.text
+      rev.anonymous = formData.anonymous
+      rev.rating = formData.rating
+      rev.overview = formData.overview
+      setSelected(rev)
       queryClient.invalidateQueries("getPendingReviews");
       queryClient.invalidateQueries(`getReviews_${prof_id}`);
       queryClient.invalidateQueries("getAccountReviews");
@@ -64,6 +70,7 @@ const Review = (props) => {
       rating: rating,
     });
   }, [rating]);
+
   const cancel = () => {
     document.getElementById("review-prof-box").style.display = "none";
     document.getElementById("overlay").style.display = "none";
@@ -79,7 +86,7 @@ const Review = (props) => {
       cancel();
       review.reset();
       updateReview.reset();
-    }, 1500);
+    }, 2000);
   };
   return (
     <>
@@ -98,6 +105,7 @@ const Review = (props) => {
         {updateReview.isSuccess && (
           <div className="success">
             successfully submitted! Awaiting approval!
+            changes will appear when reload
           </div>
         )}
         <form onSubmit={handleFormSubmit} className="review-form">

@@ -114,6 +114,7 @@ const Profs = ({auth}) => {
       );
     }
   }, [page, reviewsQuery.isFetching]);
+  console.log(profQuery.data)
   const handelReview = () => {
     document.getElementById("review-prof-box").style.display = "block";
     document.getElementById("overlay").style.display = "block";
@@ -170,7 +171,7 @@ const Profs = ({auth}) => {
                   {profQuery.isSuccess &&
                     profQuery.data.facilities
                       .map((obj) => obj.name)
-                      .join(",")}
+                      .join(",").slice(0,30) + "..."}
                 </p>
               </div>
             </div>
